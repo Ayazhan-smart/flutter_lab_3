@@ -1,4 +1,5 @@
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -11,171 +12,123 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool isFirstImage = true;
-
-  void toggleImage() {
-    setState(() {
-      isFirstImage = !isFirstImage;
-    });
-  }
+  bool _showImage = true;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: true, 
-      home: MainScreen(toggleImage: toggleImage, isFirstImage: isFirstImage),
-    );
-  }
-}
-
-class MainScreen extends StatelessWidget {
-  final VoidCallback toggleImage;
-  final bool isFirstImage;
-
-  const MainScreen({super.key, required this.toggleImage, required this.isFirstImage});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Flutter Lab 3")),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            buildStack(),
-            const SizedBox(height: 20),
-            buildImageContainer(),
-            const SizedBox(height: 20),
-            buildTypesButton(context),
-          ],
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text("lab_3"),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Image.network(
+                "https://yandex.kz/images/search?from=tabbar&img_url=https%3A%2F%2Fi.sstatic.net%2FO7Axz.png&lr=162&pos=41&rpt=simage&text=flutter ",
+              ),
+              const SizedBox(height: 40),
+              Image.asset(
+                "assets/image1.jpg",
+                width: 200,
+                height: 200,
+                fit: BoxFit.cover,
+              ),
+              const SizedBox(height: 20),
+              buildStack(),
+              buildButtons(),
+            ],
+          ),
         ),
       ),
     );
   }
-
   Widget buildStack() {
     return Stack(
+      alignment: Alignment.center,
       children: [
+       
         Image.asset(
-          'assets/image1.jpg',
-          width: double.infinity,
-          height: 250,
+          "assets/image1.jpg",
+          width: 300,
+          height: 300,
           fit: BoxFit.cover,
         ),
+       
         Container(
-          width: double.infinity,
-          height: 250,
+          width: 300,
+          height: 300,
           color: Colors.black.withOpacity(0.5),
         ),
-        const Positioned(
-          top: 100,
-          left: 50,
-          child: Text(
-            "Welcome to Flutter",
-            style: TextStyle(
-              fontSize: 24,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+        
+        const Text(
+          "Welcome to Flutter",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ],
     );
   }
 
-  Widget buildImageContainer() {
-    return Container(
-      width: 300,
-      height: 200,
-      decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-      child: Image.asset(
-        'assets/image1.jpg',
-        fit: BoxFit.cover,
-      ),
-    );
-  }
-
-  Widget buildTypesButton(BuildContext context) {
+  Widget buildButtons() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        
         ElevatedButton(
           onPressed: () {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Сіз SnackBar батырмасын бастыныз!'),
-                duration: Duration(seconds: 2),
-              ),
+              const SnackBar(content: Text('SnackBar is shown')),
             );
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue,
-            minimumSize: const Size(200, 50),
+            backgroundColor: Colors.blue,      
+            foregroundColor: Colors.white,     
+            minimumSize: const Size(200, 50),  
+            textStyle: const TextStyle(fontSize: 16),
           ),
-          child: const Text("Show SnackBar", style: TextStyle(fontSize: 16, color: Colors.white)),
+          child: const Text("Show SnackBar"),
         ),
         const SizedBox(height: 20),
+        
         TextButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SecondScreen()),
-            );
           },
           style: TextButton.styleFrom(
-            minimumSize: const Size(200, 50),
+            foregroundColor: Colors.green,      
+            minimumSize: const Size(200, 50),   
+            textStyle: const TextStyle(fontSize: 16),
           ),
-          child: const Text("Go to Second Screen", style: TextStyle(fontSize: 16, color: Colors.green)),
+          child: const Text("Go to Second Screen"),
         ),
         const SizedBox(height: 20),
-        Image.asset(
-          isFirstImage ? 'assets/image1.jpg' : 'assets/image2.jpg',
-          width: 200,
-          height: 200,
-          fit: BoxFit.cover,
-        ),
-        const SizedBox(height: 20),
+        
         OutlinedButton(
-          onPressed: toggleImage,
+          onPressed: () {
+            setState(() {
+              _showImage = !_showImage; 
+            });
+          },
           style: OutlinedButton.styleFrom(
-            minimumSize: const Size(200, 50),
-            side: const BorderSide(color: Colors.black),
+            foregroundColor: Colors.black,             
+            minimumSize: const Size(200, 50),          
+            textStyle: const TextStyle(fontSize: 16),
           ),
-          child: const Text("Toggle Image", style: TextStyle(fontSize: 16, color: Colors.black)),
+          child: const Text("Toggle Image"),
         ),
+
+        const SizedBox(height: 20),
+        _showImage
+            ? Image.asset(
+                "assets/image1.jpg",
+                width: 200,
+                height: 200,
+                fit: BoxFit.cover,
+              )
+            : Container(), 
       ],
-    );
-  }
-}
-
-class SecondScreen extends StatelessWidget {
-  const SecondScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Second Screen")),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              "Сіз Екінші экранға өттіңіз!",
-              style: TextStyle(fontSize: 20),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueGrey,
-                minimumSize: const Size(200, 50),
-              ),
-              child: const Text("Back", style: TextStyle(fontSize: 16, color: Colors.white)),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
